@@ -94,14 +94,15 @@ placements = Dict{String, Ahorn.EntityPlacement}(
         Maple.DreamMirror
     ),
     "Lightbeam" => Ahorn.EntityPlacement(
-        (x, y) -> Maple.Lightbeam(x, y, 0),
-	    "point"
+        # note to self: lightbeams are RECTANGLES you fuckin dumb eediot
+        (x, y) -> Maple.Lightbeam(x, y, 16, 8, 0),
+	    "rectangle"
     ),
     "Floating Debris" => Ahorn.EntityPlacement(
         Maple.FloatingDebris,
 	    "point"
     ),
-    "Floating Debris (Foreground)" => Ahorn.EntityPlacement(
+    "Foreground Debris" => Ahorn.EntityPlacement(
         Maple.ForegroundDebris,
 	    "point"
     ),
@@ -132,16 +133,27 @@ function editingOptions(entity::Maple.Entity)
 end
 
 function minimumSize(entity::Maple.Entity)
-    if entity.name == "starJumpBlock" || entity.name == glassblockcodename || entity.name == glassblockbgcodename || entity.name == "bigWaterfall"
+    if entity.name == "starJumpBlock" ||
+        entity.name == glassblockcodename || 
+        entity.name == glassblockbgcodename || 
+        entity.name == "bigWaterfall"
         return true, 8, 8
     end
     if entity.name == "heartGemDoor"
         return true, 16, 1
     end
+    if entity.name == "lightbeam"
+        return true, 6, 6
+    end
 end
 
 function resizable(entity::Maple.Entity)
-    if entity.name == "starJumpBlock" || entity.name == "heartGemDoor" || entity.name == glassblockcodename || entity.name == glassblockbgcodename || entity.name == "bigWaterfall"
+    if entity.name == "starJumpBlock" || 
+        entity.name == "heartGemDoor" || 
+        entity.name == glassblockcodename || 
+        entity.name == glassblockbgcodename || 
+        entity.name == "bigWaterfall" ||
+        entity.name == "lightbeam"
         return true, true, true
     end
 end
@@ -160,9 +172,14 @@ function renderSelectedAbs(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity)
 end
 
 function selection(entity::Maple.Entity)
-    if entity.name == "lightbeam"
+    if entity.name == "floatingDebris"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
+    end
+
+    if entity.name == "foregroundDebris"
+        x, y = Ahorn.entityTranslation(entity)
+        return true, Ahorn.Rectangle(x - 24, y - 1, 24, 24)
     end
 
     if entity.name == "refill"
@@ -192,20 +209,6 @@ function selection(entity::Maple.Entity)
         return true, Ahorn.Rectangle(x, y + 4, 24, 8)
     end
 
-    if entity.name == "starJumpBlock"
-        x, y = Ahorn.entityTranslation(entity)
-	    width = Int(get(entity.data, "width", 8))
-	    height = Int(get(entity.data, "height", 8))
-        return true, Ahorn.Rectangle(x, y, width, height)
-    end
-
-    if entity.name == glassblockcodename || entity.name == glassblockbgcodename
-        x, y = Ahorn.entityTranslation(entity)
-	    width = Int(get(entity.data, "width", 16))
-	    height = Int(get(entity.data, "height", 16))
-        return true, Ahorn.Rectangle(x, y, width, height)
-    end
-
     if entity.name == "soundsource"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x, y, 8, 8)
@@ -233,7 +236,18 @@ function selection(entity::Maple.Entity)
         return true, Ahorn.Rectangle(x - 32, y - 32, 64, 32)
     end
 
-    if entity.name == "bigWaterfall"
+    if entity.name == "lightbeam"
+        x, y = Ahorn.entityTranslation(entity)
+        width = Int(get(entity.data, "width", 8))
+        height = Int(get(entity.data, "height", 8))
+        return true, Ahorn.Rectangle(x-width/2, y, width, height)
+    end
+
+    # generic rectangle selection
+    if entity.name == glassblockcodename || 
+        entity.name == glassblockbgcodename ||
+        entity.name == "starJumpBlock" ||
+        entity.name == "bigWaterfall"
         x, y = Ahorn.entityTranslation(entity)
         width = Int(get(entity.data, "width", 8))
         height = Int(get(entity.data, "height", 8))
@@ -243,11 +257,16 @@ end
 
 bigWaterfallColor = (135, 206, 250, 1) ./ (255, 255, 255, 1.0) .* (0.4, 0.6, 0.7, 0.7)
 
+function radToDegree(rad::Number)
+    return rad * (180/π)
+end
+
 function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple.Room)
     if entity.name == "key"
         Ahorn.drawSprite(ctx, "collectables/key/idle00.png", 0, 0)
         return true
     end
+
     if entity.name == "refill"
         twoDash = Bool(get(entity.data, "twoDash", false))
         if twodash
@@ -258,6 +277,19 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
 
         return true
     end
+
+    if entity.name == "floatingDebris"
+        x, y = Ahorn.entityTranslation(entity)
+        Ahorn.drawSprite(ctx, "debris/b.png", 0, 0)
+        return true
+    end
+
+    if entity.name == "foregroundDebris"
+        x, y = Ahorn.entityTranslation(entity)
+        Ahorn.drawSprite(ctx, "scenery/fgdebris/rock_a00.png", 0, 0)
+        return true
+    end
+
     if entity.name == "introCar"
 	    x, y = Ahorn.entityTranslation(entity)
 	    Ahorn.drawSprite(ctx, "scenery/car/wheels.png", 0, -9)
@@ -339,8 +371,18 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
     end
 
     if entity.name == "lightbeam"
-        Ahorn.drawSprite(ctx, "objects/refill/idle00.png", 0, 0)
+        x, y = Ahorn.entityTranslation(entity)
+	    width = Int(get(entity.data, "width", 8))
+	    height = Int(get(entity.data, "height", 8))
+        ang = Int(get(entity.data, "rotation", 0))
 
+        # no idea how to make this work, please help
+
+        # nx = cos(ang) * 32
+        # ny = sin(radToDegree(ang)) * 32
+
+        Ahorn.drawRectangle(ctx, 0-width/2, 0, width, height, (255, 255, 255, 150) ./ 255, (255, 255, 255, 255) ./ 255)
+        # Ahorn.drawArrow(ctx, 0, 0, nx, ny, (1.0, 1.0, 1.0, 1.0), headLength=6)
         return true
     end
 
@@ -349,6 +391,7 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
         y = Int(get(entity.data, "y", 0))
         width = Int(get(entity.data, "width", 0))
         height = Int(get(entity.data, "height", 0))
+
         Ahorn.drawRectangle(ctx, 0, 0, width, height, bigWaterfallColor, (0.0, 0.0, 0.0, 0.0))
         return true
     end
