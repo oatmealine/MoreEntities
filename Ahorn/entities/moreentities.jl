@@ -11,6 +11,7 @@ GlassBlockBG(x::Integer, y::Integer, width::Integer=16, height::Integer=16, sink
 RefillUpdated(x::Integer, y::Integer, twoDash::Bool, oneUse::Bool) = Maple.Entity("refill", x=x, y=y, twoDash=twoDash, oneUse=oneUse)
 KeyUpdated(x::Integer, y::Integer) = Maple.Entity("key", x=x, y=y)
 
+BigWaterfall(x::Integer, y::Integer, width::Integer=16, height::Integer=32, layer::String="FG") = Entity("bigWaterfall", x=x, y=y, width=width, height=height, layer=layer)
 
 placements = Dict{String, Ahorn.EntityPlacement}(
     "Intro Car" => Ahorn.EntityPlacement(
@@ -68,17 +69,6 @@ placements = Dict{String, Ahorn.EntityPlacement}(
         (x, y) -> Maple.Lightbeam(x, y, 0),
 	    "point"
     ),
-    "Big Waterfall (FG)" => Ahorn.EntityPlacement(
-        (x, y) -> Maple.BigWaterfall(x, y, 64, "FG"),
-	    "point"
-    ),
-    "Big Waterfall (BG)" => Ahorn.EntityPlacement(
-        (x, y) -> Maple.BigWaterfall(x, y, 64, "BG"),
-	    "point",
-        Dict{String,Any}(
-            "height" => 64
-        )
-    ),
     "Floating Debris" => Ahorn.EntityPlacement(
         Maple.FloatingDebris,
 	    "point"
@@ -86,6 +76,10 @@ placements = Dict{String, Ahorn.EntityPlacement}(
     "Floating Debris (Foreground)" => Ahorn.EntityPlacement(
         Maple.ForegroundDebris,
 	    "point"
+    ),
+    "Waterfall (Big)" => Ahorn.EntityPlacement(
+        BigWaterfall,
+        "rectangle"
     ),
     "Refill (1.2.5.0)" => Ahorn.EntityPlacement(
 	    (x, y) -> RefillUpdated(x, y, false, false)
@@ -175,10 +169,25 @@ function selection(entity::Maple.Entity)
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 32, y - 32, 64, 32)
     end
+
+    if entity.name == "bigWaterfall"
+        x, y = Ahorn.entityTranslation(entity)
+        width = Int(get(entity.data, "width", 8))
+        height = Int(get(entity.data, "height", 8))
+        return true, Ahorn.Rectangle(x, y, width, height)
+    end
+end
+
+function editingOptions(entity::Maple.Entity)
+    if entity.name == "bigWaterfall"
+        return true, Dict{String, Any}(
+            "layer" => String["FG", "BG"]
+        )
+    end
 end
 
 function minimumSize(entity::Maple.Entity)
-    if entity.name == "starJumpBlock" || entity.name == glassblockcodename || entity.name == glassblockbgcodename
+    if entity.name == "starJumpBlock" || entity.name == glassblockcodename || entity.name == glassblockbgcodename || entity.name == "bigWaterfall"
         return true, 8, 8
     end
     if entity.name == "heartGemDoor"
@@ -187,7 +196,7 @@ function minimumSize(entity::Maple.Entity)
 end
 
 function resizable(entity::Maple.Entity)
-    if entity.name == "starJumpBlock" || entity.name == "heartGemDoor" || entity.name == glassblockcodename || entity.name == glassblockbgcodename
+    if entity.name == "starJumpBlock" || entity.name == "heartGemDoor" || entity.name == glassblockcodename || entity.name == glassblockbgcodename || entity.name == "bigWaterfall"
         return true, true, true
     end
 end
@@ -205,6 +214,7 @@ function renderSelectedAbs(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity)
     end
 end
 
+bigWaterfallColor = (135, 206, 250, 1) ./ (255, 255, 255, 1.0) .* (0.4, 0.6, 0.7, 0.7)
 
 function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple.Room)
     if entity.name == "key"
@@ -306,9 +316,13 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
 
         return true
     end
-    if entity.name == "bigWaterfall"
-        Ahorn.drawSprite(ctx, "objects/refill/idle00.png", 0, 0)
 
+    if entity.name == "bigWaterfall"
+        x = Int(get(entity.data, "x", 0))
+        y = Int(get(entity.data, "y", 0))
+        width = Int(get(entity.data, "width", 0))
+        height = Int(get(entity.data, "height", 0))
+        Ahorn.drawRectangle(ctx, 0, 0, width, height, bigWaterfallColor, (0.0, 0.0, 0.0, 0.0))
         return true
     end
 
