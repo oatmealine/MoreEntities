@@ -66,29 +66,29 @@ placements = Dict{String, Ahorn.EntityPlacement}(
     ),
     "Lightbeam" => Ahorn.EntityPlacement(
         (x, y) -> Maple.Lightbeam(x, y, 0),
-	"point"
+	    "point"
     ),
     "Big Waterfall (FG)" => Ahorn.EntityPlacement(
         (x, y) -> Maple.BigWaterfall(x, y, 64, "FG"),
-	"point"
+	    "point"
     ),
     "Big Waterfall (BG)" => Ahorn.EntityPlacement(
         (x, y) -> Maple.BigWaterfall(x, y, 64, "BG"),
-	"point",
+	    "point",
         Dict{String,Any}(
             "height" => 64
         )
     ),
     "Floating Debris" => Ahorn.EntityPlacement(
         Maple.FloatingDebris,
-	"point"
+	    "point"
     ),
     "Floating Debris (Foreground)" => Ahorn.EntityPlacement(
         Maple.ForegroundDebris,
-	"point"
+	    "point"
     ),
     "Refill (1.2.5.0)" => Ahorn.EntityPlacement(
-	(x, y) -> RefillUpdated(x, y, false, false)
+	    (x, y) -> RefillUpdated(x, y, false, false)
     ),
     "Key (1.2.6.0)" => Ahorn.EntityPlacement(
         KeyUpdated
@@ -104,23 +104,20 @@ end
 function selection(entity::Maple.Entity)
     if entity.name == "lightbeam"
         x, y = Ahorn.entityTranslation(entity)
-
         return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
     end
     if entity.name == "bigWaterfall"
         x, y = Ahorn.entityTranslation(entity)
-
         return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
     end
     if entity.name == "refill"
         x, y = Ahorn.entityTranslation(entity)
-
         return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
     end
     if entity.name == "key"
         x, y = Ahorn.entityTranslation(entity)
-
         nodes = get(entity.data, "nodes", ())
+
         if isempty(nodes)
             return true, Ahorn.Rectangle(x - 8, y - 8, 16, 16)
         else
@@ -130,13 +127,11 @@ function selection(entity::Maple.Entity)
     end
     if entity.name == "introCar"
         x, y = Ahorn.entityTranslation(entity)
-
         return true, Ahorn.Rectangle(x - 22, y - 18, 47, 18)
     end
 
     if entity.name == "trapdoor"
         x, y = Ahorn.entityTranslation(entity)
-
         return true, Ahorn.Rectangle(x, y + 4, 24, 8)
     end
 
@@ -204,7 +199,6 @@ function renderSelectedAbs(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity)
         
         if !isempty(nodes)
             nx, ny = Int.(nodes[1])
-
             Ahorn.drawSprite(ctx, "collectables/key/idle00.png", nx, ny)
             Ahorn.drawArrow(ctx, x, y, nx, ny, Ahorn.colors.selection_selected_fc, headLength=6)
         end
@@ -215,7 +209,6 @@ end
 function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple.Room)
     if entity.name == "key"
         Ahorn.drawSprite(ctx, "collectables/key/idle00.png", 0, 0)
-
         return true
     end
     if entity.name == "refill"
@@ -295,7 +288,8 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
 
 	    Ahorn.drawRectangle(ctx, 0, 32, width, rheight, (76, 168, 214, 102) ./ 255, (108, 214, 235, 255) ./ 255)
 	    Ahorn.drawRectangle(ctx, 0, -32-rheight, width, rheight, (76, 168, 214, 102) ./ 255, (108, 214, 235, 255) ./ 255)
-	    Ahorn.drawRectangle(ctx, 0, -32, width, 64, (76, 168, 214, 102) ./ 255, (108, 214, 235, 0) ./ 255)
+        Ahorn.drawRectangle(ctx, 0, -32, width, 64, (76, 168, 214, 102) ./ 255, (108, 214, 235, 0) ./ 255)
+        
         return true
     end
 
