@@ -95,19 +95,53 @@ function nodeLimits(entity::Maple.Entity)
     end
 end
 
+function editingOptions(entity::Maple.Entity)
+    if entity.name == "bigWaterfall"
+        return true, Dict{String, Any}(
+            "layer" => String["FG", "BG"]
+        )
+    end
+end
+
+function minimumSize(entity::Maple.Entity)
+    if entity.name == "starJumpBlock" || entity.name == glassblockcodename || entity.name == glassblockbgcodename || entity.name == "bigWaterfall"
+        return true, 8, 8
+    end
+    if entity.name == "heartGemDoor"
+        return true, 16, 1
+    end
+end
+
+function resizable(entity::Maple.Entity)
+    if entity.name == "starJumpBlock" || entity.name == "heartGemDoor" || entity.name == glassblockcodename || entity.name == glassblockbgcodename || entity.name == "bigWaterfall"
+        return true, true, true
+    end
+end
+
+function renderSelectedAbs(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity)
+    if entity.name == "key"
+        x, y = Ahorn.entityTranslation(entity)
+        nodes = get(entity.data, "nodes", ())
+        
+        if !isempty(nodes)
+            nx, ny = Int.(nodes[1])
+            Ahorn.drawSprite(ctx, "collectables/key/idle00.png", nx, ny)
+            Ahorn.drawArrow(ctx, x, y, nx, ny, Ahorn.colors.selection_selected_fc, headLength=6)
+        end
+    end
+end
+
 function selection(entity::Maple.Entity)
     if entity.name == "lightbeam"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
     end
-    if entity.name == "bigWaterfall"
-        x, y = Ahorn.entityTranslation(entity)
-        return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
-    end
+
     if entity.name == "refill"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
     end
+
     if entity.name == "key"
         x, y = Ahorn.entityTranslation(entity)
         nodes = get(entity.data, "nodes", ())
@@ -119,6 +153,7 @@ function selection(entity::Maple.Entity)
             return true, [Ahorn.Rectangle(x - 8, y - 8, 16, 16), Ahorn.Rectangle(nx - 8, ny - 8, 16, 16)]
         end
     end
+    
     if entity.name == "introCar"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 22, y - 18, 47, 18)
@@ -175,42 +210,6 @@ function selection(entity::Maple.Entity)
         width = Int(get(entity.data, "width", 8))
         height = Int(get(entity.data, "height", 8))
         return true, Ahorn.Rectangle(x, y, width, height)
-    end
-end
-
-function editingOptions(entity::Maple.Entity)
-    if entity.name == "bigWaterfall"
-        return true, Dict{String, Any}(
-            "layer" => String["FG", "BG"]
-        )
-    end
-end
-
-function minimumSize(entity::Maple.Entity)
-    if entity.name == "starJumpBlock" || entity.name == glassblockcodename || entity.name == glassblockbgcodename || entity.name == "bigWaterfall"
-        return true, 8, 8
-    end
-    if entity.name == "heartGemDoor"
-        return true, 16, 1
-    end
-end
-
-function resizable(entity::Maple.Entity)
-    if entity.name == "starJumpBlock" || entity.name == "heartGemDoor" || entity.name == glassblockcodename || entity.name == glassblockbgcodename || entity.name == "bigWaterfall"
-        return true, true, true
-    end
-end
-
-function renderSelectedAbs(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity)
-    if entity.name == "key"
-        x, y = Ahorn.entityTranslation(entity)
-        nodes = get(entity.data, "nodes", ())
-        
-        if !isempty(nodes)
-            nx, ny = Int.(nodes[1])
-            Ahorn.drawSprite(ctx, "collectables/key/idle00.png", nx, ny)
-            Ahorn.drawArrow(ctx, x, y, nx, ny, Ahorn.colors.selection_selected_fc, headLength=6)
-        end
     end
 end
 
