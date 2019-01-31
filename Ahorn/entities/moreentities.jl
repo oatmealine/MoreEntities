@@ -2,6 +2,34 @@ module MoreEntities
 
 using ..Ahorn, Maple
 
+# thefox#1337 6:36PM 1/31/19
+# btw if you guys want stable builds instead of broken ass chairs inserted as ascii characters in my code take stuff from here 
+# https://github.com/thefoxbot/MoreEntities/releases
+# i wasn't fucking lying when i said that
+#
+#              .............
+#            .'             '.
+#           : '.           .' :
+#           :  :           :  :
+#           :  :           :  :
+#           :  :           :  :
+#           :  :           :  :
+#          .'  :           :  '.
+#       _.'    :...........:    '._
+#      (     .'             '.     )
+#       '._.'                 '._.'
+#         (.....................)
+#          \___________________/
+#           (. . . . . . . . .)
+#            \  /_/     \_\ --/
+#             ||           |
+#             )|           |\
+#            (_/           \__\
+#
+# THIS IS THE DEBUG BROKEN CHAIR
+# if you see this, this code was NOT tested and WILL break
+
+
 glassblockcodename = "glassBlock"
 glassblockbgcodename = "BGGlassBlock"
 
@@ -153,7 +181,7 @@ function selection(entity::Maple.Entity)
             return true, [Ahorn.Rectangle(x - 8, y - 8, 16, 16), Ahorn.Rectangle(nx - 8, ny - 8, 16, 16)]
         end
     end
-    
+
     if entity.name == "introCar"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 22, y - 18, 47, 18)
