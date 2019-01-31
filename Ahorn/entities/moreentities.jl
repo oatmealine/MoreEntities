@@ -5,6 +5,8 @@ using ..Ahorn, Maple
 glassblockcodename = "glassBlock"
 glassblockbgcodename = "BGGlassBlock"
 
+Comment(x::Integer, y::Integer, comment::String) = Maple.Entity("comment", x=x, y=y, comment=comment)
+
 GlassBlock(x::Integer, y::Integer, width::Integer=16, height::Integer=16, sinks::Bool=false) = Maple.Entity(glassblockcodename, x=x, y=y, width=width, height=height, sinks=sinks)
 GlassBlockBG(x::Integer, y::Integer, width::Integer=16, height::Integer=16, sinks::Bool=false) = Maple.Entity(glassblockbgcodename, x=x, y=y, width=width, height=height, sinks=sinks)
 
@@ -87,6 +89,13 @@ placements = Dict{String, Ahorn.EntityPlacement}(
     ),
     "Key (1.2.6.0)" => Ahorn.EntityPlacement(
         KeyUpdated
+    ),
+    "Comment (Ahorn)" => Ahorn.EntityPlacement(
+        (x, y) -> Comment(x, y, "Insert your comment here..."),
+        "point",
+        Dict{String,Any}(
+            "comment" => "Insert your comment here..."
+        )
     )
 )
 
@@ -215,6 +224,11 @@ function selection(entity::Maple.Entity)
         return true, Ahorn.Rectangle(x-width/2, y, width, height)
     end
 
+    if entity.name == "comment"
+        x, y = Ahorn.entityTranslation(entity)
+        return true, Ahorn.Rectangle(x - 8, y - 8, 16, 16)
+    end
+
     # generic rectangle selection
     if entity.name == glassblockcodename || 
         entity.name == glassblockbgcodename ||
@@ -234,8 +248,13 @@ function radToDegree(rad::Number)
 end
 
 function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple.Room)
+    if entity.name == "comment"
+        Ahorn.drawSprite(ctx, "objects/ahornrender/comment.png", 0, 0)
+        return true
+    end
+
     if entity.name == "key"
-        Ahorn.drawSprite(ctx, "collectables/key/idle00.png", 0, 0)
+        Ahorn.drawSprite(ctx, "collectables/key/idle00.png", 0 - 8, 0 - 8)
         return true
     end
 
