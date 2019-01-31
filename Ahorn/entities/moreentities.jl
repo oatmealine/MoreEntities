@@ -90,7 +90,7 @@ placements = Dict{String, Ahorn.EntityPlacement}(
     "Refill (1.2.5.0)" => Ahorn.EntityPlacement(
 	(x, y) -> RefillUpdated(x, y, false, false)
     ),
-    "Key (1.2.5.0)" => Ahorn.EntityPlacement(
+    "Key (1.2.6.0)" => Ahorn.EntityPlacement(
         KeyUpdated
     )
 )
