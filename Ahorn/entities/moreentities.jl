@@ -1,3 +1,30 @@
+# thefox#1337 6:36PM 1/31/19
+# btw if you guys want stable builds instead of broken ass chairs inserted as ascii characters in my code take stuff from here 
+# https://github.com/thefoxbot/MoreEntities/releases
+# i wasn't fucking lying when i said that
+#
+#              .............
+#            .'             '.
+#           : '.           .' :
+#           :  :           :  :
+#           :  :           :  :
+#           :  :           :  :
+#           :  :           :  :
+#          .'  :           :  '.
+#       _.'    :...........:    '._
+#      (     .'             '.     )
+#       '._.'                 '._.'
+#         (.....................)
+#          \___________________/
+#           (. . . . . . . . .)
+#            \  /_/     \_\ --/
+#             ||           |
+#             )|           |\
+#            (_/           \__\
+#
+# THIS IS THE DEBUG BROKEN CHAIR
+# if you see this, this code was NOT tested and WILL break
+
 module MoreEntities
 
 using ..Ahorn, Maple
@@ -12,6 +39,10 @@ GlassBlockBG(x::Integer, y::Integer, width::Integer=16, height::Integer=16, sink
 
 RefillUpdated(x::Integer, y::Integer, twoDash::Bool, oneUse::Bool) = Maple.Entity("refill", x=x, y=y, twoDash=twoDash, oneUse=oneUse)
 KeyUpdated(x::Integer, y::Integer) = Maple.Entity("key", x=x, y=y)
+DarkChaserUpdated(x::Integer, y::Integer, canChangeMusic::Bool=false) = Entity("darkChaser", x=x, y=y, canChangeMusic=canChangeMusic)
+function BadelineBossUpdated(x::Integer, y::Integer, nodes::Array{Tuple{T, T}, 1}=Tuple{Integer, Integer}[], patternIndex::Integer=1, startHit::Bool=false, cameraPastY::Number=120.0, lockCamera::Bool=true, canChangeMusic::Bool=false) where {T <: Integer}
+    return Entity("finalBoss", x=x, y=y, startHit=startHit, nodes=nodes, patternIndex=patternIndex, cameraPastY=cameraPastY, lockCamera=lockCamera, canChangeMusic=canChangeMusic)
+end
 
 BigWaterfall(x::Integer, y::Integer, width::Integer=16, height::Integer=32, layer::String="FG") = Entity("bigWaterfall", x=x, y=y, width=width, height=height, layer=layer)
 
@@ -96,7 +127,13 @@ placements = Dict{String, Ahorn.EntityPlacement}(
         Dict{String,Any}(
             "comment" => "Insert your comment here..."
         )
-    )
+    ),
+    "Badeline Chaser (Everest)" => Ahorn.EntityPlacement(
+	    DarkChaserUpdated
+    ),
+    "Badeline Boss (Everest)" => Ahorn.EntityPlacement(
+	    BadelineBossUpdated
+    ),
 )
 
 function nodeLimits(entity::Maple.Entity)
@@ -153,6 +190,12 @@ function renderSelectedAbs(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity)
 end
 
 function selection(entity::Maple.Entity)
+    if entity.name == "darkChaser"
+        x, y = Ahorn.entityTranslation(entity)
+
+        return true, Ahorn.Rectangle(x - 2, y - 16, 12, 16)
+    end
+
     if entity.name == "floatingDebris"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
@@ -250,6 +293,12 @@ end
 function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple.Room)
     if entity.name == "comment"
         Ahorn.drawSprite(ctx, "objects/ahornrender/comment.png", 0, 0)
+        return true
+    end
+
+    if entity.name == "darkChaser"
+        Ahorn.drawSprite(ctx, "characters/badeline/sleep00.png", 4, -16)
+
         return true
     end
 
