@@ -156,11 +156,9 @@ function minimumSize(entity::Maple.Entity)
         entity.name == glassblockbgcodename || 
         entity.name == "bigWaterfall"
         return true, 8, 8
-    end
-    if entity.name == "heartGemDoor"
+    elseif entity.name == "heartGemDoor"
         return true, 16, 1
-    end
-    if entity.name == "lightbeam"
+    elseif entity.name == "lightbeam"
         return true, 6, 6
     end
 end
@@ -194,24 +192,16 @@ function selection(entity::Maple.Entity)
         x, y = Ahorn.entityTranslation(entity)
 
         return true, Ahorn.Rectangle(x - 2, y - 16, 12, 16)
-    end
-
-    if entity.name == "floatingDebris"
+    elseif entity.name == "floatingDebris"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
-    end
-
-    if entity.name == "foregroundDebris"
+    elseif entity.name == "foregroundDebris"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 24, y - 1, 24, 24)
-    end
-
-    if entity.name == "refill"
+    elseif entity.name == "refill"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 6, y - 6, 12, 12)
-    end
-
-    if entity.name == "key"
+    elseif entity.name == "key"
         x, y = Ahorn.entityTranslation(entity)
         nodes = get(entity.data, "nodes", ())
 
@@ -221,59 +211,39 @@ function selection(entity::Maple.Entity)
             nx, ny = Int.(nodes[1])
             return true, [Ahorn.Rectangle(x - 8, y - 8, 16, 16), Ahorn.Rectangle(nx - 8, ny - 8, 16, 16)]
         end
-    end
-
-    if entity.name == "introCar"
+    elseif entity.name == "introCar"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 22, y - 18, 47, 18)
-    end
-
-    if entity.name == "trapdoor"
+    elseif entity.name == "trapdoor"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x, y + 4, 24, 8)
-    end
-
-    if entity.name == "soundsource"
+    elseif entity.name == "soundsource"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x, y, 8, 8)
-    end
-
-    if entity.name == "everest/coreMessage" || entity.name == "coreMessage"
+    elseif entity.name == "everest/coreMessage" || entity.name == "coreMessage"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x, y, 8, 8)
-    end
-
-    if entity.name == "heartGemDoor"
+    elseif entity.name == "heartGemDoor"
         x, y = Ahorn.entityTranslation(entity)
 	    width = Int(get(entity.data, "width", 8))
 	    height = Int(get(entity.data, "height", 8))
         return true, Ahorn.Rectangle(x, y-216, width, 432)
-    end
-
-    if entity.name == "everest/memorial"
+    elseif entity.name == "everest/memorial"
 	    x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 20, y - 60, 40, 60)
-    end
-
-    if entity.name == "dreammirror"
+    elseif entity.name == "dreammirror"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 32, y - 32, 64, 32)
-    end
-
-    if entity.name == "lightbeam"
+    elseif entity.name == "lightbeam"
         x, y = Ahorn.entityTranslation(entity)
         width = Int(get(entity.data, "width", 8))
         height = Int(get(entity.data, "height", 8))
         return true, Ahorn.Rectangle(x-width/2, y, width, height)
-    end
-
-    if entity.name == "comment"
+    elseif entity.name == "comment"
         x, y = Ahorn.entityTranslation(entity)
         return true, Ahorn.Rectangle(x - 8, y - 8, 16, 16)
-    end
-
     # generic rectangle selection
-    if entity.name == glassblockcodename || 
+    elseif entity.name == glassblockcodename || 
         entity.name == glassblockbgcodename ||
         entity.name == "starJumpBlock" ||
         entity.name == "bigWaterfall"
@@ -294,20 +264,14 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
     if entity.name == "comment"
         Ahorn.drawSprite(ctx, "objects/ahornrender/comment.png", 0, 0)
         return true
-    end
-
-    if entity.name == "darkChaser"
+    elseif entity.name == "darkChaser"
         Ahorn.drawSprite(ctx, "characters/badeline/sleep00.png", 4, -16)
 
         return true
-    end
-
-    if entity.name == "key"
+    elseif entity.name == "key"
         Ahorn.drawSprite(ctx, "collectables/key/idle00.png", 0 - 8, 0 - 8)
         return true
-    end
-
-    if entity.name == "refill"
+    elseif entity.name == "refill"
         twoDash = Bool(get(entity.data, "twoDash", false))
         if twodash
             Ahorn.drawSprite(ctx, "objects/refillTwo/idle00.png", 0, 0)
@@ -316,56 +280,40 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
         end
 
         return true
-    end
-
-    if entity.name == "floatingDebris"
+    elseif entity.name == "floatingDebris"
         x, y = Ahorn.entityTranslation(entity)
         Ahorn.drawSprite(ctx, "debris/b.png", 0, 0)
         return true
-    end
-
-    if entity.name == "foregroundDebris"
+    elseif entity.name == "foregroundDebris"
         x, y = Ahorn.entityTranslation(entity)
         Ahorn.drawSprite(ctx, "scenery/fgdebris/rock_a00.png", 0, 0)
         return true
-    end
-
-    if entity.name == "introCar"
+    elseif entity.name == "introCar"
 	    x, y = Ahorn.entityTranslation(entity)
 	    Ahorn.drawSprite(ctx, "scenery/car/wheels.png", 0, -9)
         Ahorn.drawSprite(ctx, "scenery/car/body.png", 0, -9)
 
         return true
-    end
-
-    if entity.name == "trapdoor"
+    elseif entity.name == "trapdoor"
 	    x, y = Ahorn.entityTranslation(entity)
         Ahorn.drawSprite(ctx, "objects/door/trap01.png", 12, 16)
 
         return true
-    end
-
-    if entity.name == "soundsource"
+    elseif entity.name == "soundsource"
 	    x, y = Ahorn.entityTranslation(entity)
         Ahorn.drawSprite(ctx, "objects/ahornrender/sound.png", 4, 4)
 
         return true
-    end
-
-    if entity.name == "everest/coreMessage" || entity.name == "coreMessage"
+    elseif entity.name == "everest/coreMessage" || entity.name == "coreMessage"
         x, y = Ahorn.entityTranslation(entity)
         Ahorn.drawSprite(ctx, "objects/ahornrender/textsample.png", 0, 0)
         return true
-    end
-
-    if entity.name == "everest/memorial"
+    elseif entity.name == "everest/memorial"
 	    sprite = get(entity.data, "sprite", "scenery/memorial/memorial")
         Ahorn.drawSprite(ctx, sprite, 0, -32)
 
         return true
-    end
-
-    if entity.name == "starJumpBlock"
+    elseif entity.name == "starJumpBlock"
         x = Int(get(entity.data, "x", 0))
         y = Int(get(entity.data, "y", 0))
 
@@ -375,9 +323,7 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
 	    Ahorn.drawRectangle(ctx, 0, 0, width, height, (0, 0, 0, 0) ./ 255, (255, 255, 255, 255) ./ 255)
 
         return true
-    end
-
-    if entity.name == glassblockcodename || entity.name == glassblockbgcodename
+    elseif entity.name == glassblockcodename || entity.name == glassblockbgcodename
         x = Int(get(entity.data, "x", 0))
         y = Int(get(entity.data, "y", 0))
 
@@ -387,9 +333,7 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
 	    Ahorn.drawRectangle(ctx, 0, 0, width, height, (0, 0, 0, 150) ./ 255, (255, 255, 255, 255) ./ 255)
 
         return true
-    end
-
-    if entity.name == "heartGemDoor"
+    elseif entity.name == "heartGemDoor"
         x, y = Ahorn.entityTranslation(entity)
 	    width = Int(get(entity.data, "width", 8))
 	    height = Int(get(entity.data, "height", 8))
@@ -400,17 +344,13 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
         Ahorn.drawRectangle(ctx, 0, -32, width, 64, (76, 168, 214, 102) ./ 255, (108, 214, 235, 0) ./ 255)
         
         return true
-    end
-
-    if entity.name == "dreammirror"
+    elseif entity.name == "dreammirror"
 	    x, y = Ahorn.entityTranslation(entity)
 	    Ahorn.drawSprite(ctx, "objects/mirror/glassbreak00.png", 0, -14)
         Ahorn.drawSprite(ctx, "objects/mirror/frame.png", 0, -16)
 
         return true
-    end
-
-    if entity.name == "lightbeam"
+    elseif entity.name == "lightbeam"
         x, y = Ahorn.entityTranslation(entity)
 	    width = Int(get(entity.data, "width", 8))
 	    height = Int(get(entity.data, "height", 8))
@@ -424,9 +364,7 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
         Ahorn.drawRectangle(ctx, 0-width/2, 0, width, height, (255, 255, 255, 150) ./ 255, (255, 255, 255, 255) ./ 255)
         # Ahorn.drawArrow(ctx, 0, 0, nx, ny, (1.0, 1.0, 1.0, 1.0), headLength=6)
         return true
-    end
-
-    if entity.name == "bigWaterfall"
+    elseif entity.name == "bigWaterfall"
         x = Int(get(entity.data, "x", 0))
         y = Int(get(entity.data, "y", 0))
         width = Int(get(entity.data, "width", 0))
@@ -434,9 +372,9 @@ function render(ctx::Ahorn.Cairo.CairoContext, entity::Maple.Entity, room::Maple
 
         Ahorn.drawRectangle(ctx, 0, 0, width, height, bigWaterfallColor, (0.0, 0.0, 0.0, 0.0))
         return true
+    else
+        return false
     end
-
-    return false
 end
 
 end
