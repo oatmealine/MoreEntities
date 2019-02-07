@@ -129,7 +129,7 @@ placements = Dict{String, Ahorn.EntityPlacement}(
         )
     ),
     "Badeline Chaser (Everest)" => Ahorn.EntityPlacement(
-	    DarkChaserUpdated
+	    (x, y) -> DarkChaserUpdated(x, y, false)
     ),
     "Badeline Boss (Everest)" => Ahorn.EntityPlacement(
 	    BadelineBossUpdated
