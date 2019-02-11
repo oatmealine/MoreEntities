@@ -1,3 +1,4 @@
+THIS IS NOW OBSOLETE, ahorn jl1.1 is out, im only keeping this repo up for archiving purposes
 # MoreEntities
 a plugin for [ahorn](https://github.com/CelestialCartographers/Ahorn) that adds more entites, triggers, etc to it (will be obsolete by ahorn jl1.0)
 
